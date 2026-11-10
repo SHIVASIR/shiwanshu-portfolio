@@ -1,0 +1,188 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Registered visitor or collaborator profile authenticated via Google Sign-In",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Unique Google Firebase Auth user identifier"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 100,
+          "description": "User email address from Google Auth"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "User display name"
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Avatar photo URL"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["visitor", "recruiter", "developer", "collaborator", "admin"],
+          "description": "Visitor persona/role"
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short bio or company/role info"
+        },
+        "starredProjects": {
+          "type": "array",
+          "description": "List of bookmarked project identifiers"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the account was first recorded"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the user last signed in"
+        }
+      },
+      "required": ["id", "email", "displayName", "createdAt", "lastLoginAt"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Inquiry or message submitted to Shiwanshu",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Unique message ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Author UID"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80,
+          "minLength": 2,
+          "description": "Sender full name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 100,
+          "description": "Sender email"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 3000,
+          "minLength": 10,
+          "description": "Message content"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["sent", "read", "replied"],
+          "description": "Message delivery state"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of message submission"
+        }
+      },
+      "required": ["id", "userId", "name", "email", "message", "status", "createdAt"]
+    },
+    "ProjectLike": {
+      "title": "Project Like",
+      "description": "Endorsement/like on a portfolio project",
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Identifier of the liked project"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Author UID"
+        },
+        "userDisplayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Display name of user who liked"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the like"
+        }
+      },
+      "required": ["projectId", "userId", "userDisplayName", "createdAt"]
+    },
+    "GuestbookEntry": {
+      "title": "Guestbook Entry",
+      "description": "Public testimonial or visitor endorsement left by authenticated users",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Unique guestbook entry ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Author UID"
+        },
+        "userName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Author display name"
+        },
+        "userPhoto": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Author profile avatar"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 3,
+          "description": "Endorsement message"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when entry was left"
+        }
+      },
+      "required": ["id", "userId", "userName", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Private user profiles managed by Google Auth users"
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Messages sent by the user to the portfolio owner"
+    },
+    "/projects/{projectId}/likes/{userId}": {
+      "schema": "ProjectLike",
+      "description": "Public project likes keyed by user ID"
+    },
+    "/guestbook/{entryId}": {
+      "schema": "GuestbookEntry",
+      "description": "Public community endorsements and visitor guestbook signatures"
+    }
+  }
+}
