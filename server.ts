@@ -7,6 +7,10 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
 
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Initialize Gemini Client
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
